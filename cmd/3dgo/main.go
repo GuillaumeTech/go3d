@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+
+	"github.com/GuillaumeTech/3dgo/internal/vec3d"
 )
 
 func main() {
@@ -16,13 +18,8 @@ func main() {
 		c.Stdout = os.Stdout
 		c.Run()
 		for i := 0; i < nx; i++ {
-			r := float64(i) / float64(nx)
-			g := float64(j) / float64(ny)
-			b := 0.2
-			ir := int(255.99 * r)
-			ig := int(255.99 * g)
-			ib := int(255.99 * b)
-			image = append(image, []byte(fmt.Sprintf("%d %d %d\n", ir, ig, ib))...)
+			vector := vec3d.Vec3d{float64(i) / float64(nx), float64(j) / float64(ny), 0.2}
+			image = append(image, []byte(vector.GetColor())...)
 		}
 	}
 
