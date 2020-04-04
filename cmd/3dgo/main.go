@@ -6,20 +6,42 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/GuillaumeTech/3dgo/internal/vec3d"
+	"github.com/GuillaumeTech/3dgo/internal/geom"
 )
 
+func rayColor(ray geom.Ray) geom.Vec3d {
+	unitDir := geom.UnitVector(ray.Direction)
+	t := 0.5 * (unitDir.Y + 1)
+	start := geom.Vec3d{1, 1, 1}
+	end := geom.Vec3d{0.5, 0.7, 1.0}
+	return geom.AddTwoVec(start.Multiply(1-t), end.Multiply(t)) //lerp
+}
+
 func main() {
-	nx, ny := 200, 100
-	image := []byte(fmt.Sprintf("P3\n%d %d\n255\n", nx, ny))
-	for j := ny - 1; j >= 0; j-- {
+	const imageWidth float64 = 200
+	const imageHeight float64 = 100
+
+	image := []byte(fmt.Sprintf("P3\n%.0f %.0f\n255\n", imageWidth, imageHeight))
+
+	lowerLeftCorner := geom.Vec3d{-2, -1, -1}
+	horizontal := geom.Vec3d{4, 0, 0}
+	vertical := geom.Vec3d{0, 2, 0}
+	origin := geom.Vec3d{0, 0, 0}
+
+	for j := int(imageHeight) - 1; j >= 0; j-- {
 		fmt.Println(fmt.Sprintf("Scan lines remaining: %d ", j))
 		c := exec.Command("clear")
 		c.Stdout = os.Stdout
 		c.Run()
-		for i := 0; i < nx; i++ {
-			vector := vec3d.Vec3d{float64(i) / float64(nx), float64(j) / float64(ny), 0.2}
-			image = append(image, []byte(vector.GetColor())...)
+		for i := 0; i < int(imageWidth); i++ {
+			u := float64(i) / imageWidth
+			v := float64(j) / imageHeight
+			direction := lowerLeftCorner.Add(horizontal.Multiply(u))
+			direction = direction.Add(vertical.Multiply(v))
+			ray := geom.Ray{origin, direction}
+
+			rayColor := rayColor(ray)
+			image = append(image, []byte(rayColor.GetColor())...)
 		}
 	}
 
