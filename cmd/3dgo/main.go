@@ -9,7 +9,20 @@ import (
 	"github.com/GuillaumeTech/3dgo/internal/geom"
 )
 
+func hitSphere(center geom.Vec3d, radius float64, ray geom.Ray) bool {
+	// the ray goes througth the sphere is a 2nd deg equation
+	oc := geom.SubstractTwoVec(ray.Origin, center)
+	a := geom.DotProduct(ray.Direction, ray.Direction)
+	b := 2 * geom.DotProduct(oc, ray.Direction)
+	c := geom.DotProduct(oc, oc) - radius*radius
+	discriminant := b*b - 4*a*c
+	return discriminant > 0
+}
+
 func rayColor(ray geom.Ray) geom.Vec3d {
+	if hitSphere(geom.Vec3d{0, 0, -1}, 0.7, ray) {
+		return geom.Vec3d{1, 0, 0}
+	}
 	unitDir := geom.UnitVector(ray.Direction)
 	t := 0.5 * (unitDir.Y + 1)
 	start := geom.Vec3d{1, 1, 1}
@@ -18,8 +31,8 @@ func rayColor(ray geom.Ray) geom.Vec3d {
 }
 
 func main() {
-	const imageWidth float64 = 200
-	const imageHeight float64 = 100
+	const imageWidth float64 = 400
+	const imageHeight float64 = 200
 
 	image := []byte(fmt.Sprintf("P3\n%.0f %.0f\n255\n", imageWidth, imageHeight))
 
