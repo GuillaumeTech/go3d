@@ -3,25 +3,33 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"os/exec"
 
 	"github.com/GuillaumeTech/3dgo/internal/geom"
 )
 
-func hitSphere(center geom.Vec3d, radius float64, ray geom.Ray) bool {
+func hitSphere(center geom.Vec3d, radius float64, ray geom.Ray) float64 {
 	// the ray goes througth the sphere is a 2nd deg equation
 	oc := geom.SubstractTwoVec(ray.Origin, center)
 	a := geom.DotProduct(ray.Direction, ray.Direction)
 	b := 2 * geom.DotProduct(oc, ray.Direction)
 	c := geom.DotProduct(oc, oc) - radius*radius
 	discriminant := b*b - 4*a*c
-	return discriminant > 0
+	if discriminant < 0 {
+		return -1
+	} else {
+		return ((-b - math.Sqrt(discriminant)) / (2 * a))
+	}
 }
 
 func rayColor(ray geom.Ray) geom.Vec3d {
-	if hitSphere(geom.Vec3d{0, 0, -1}, 0.7, ray) {
-		return geom.Vec3d{1, 0, 0}
+	sphereCenter := geom.Vec3d{0, 0, -1}
+	root := hitSphere(sphereCenter, 0.7, ray)
+	if root > 0 {
+		normal := geom.UnitVector(geom.SubstractTwoVec(ray.At(root), sphereCenter))
+		return geom.MultiplyVec(0.5, geom.Vec3d{normal.X + 1, normal.Y + 1, normal.Z + 1})
 	}
 	unitDir := geom.UnitVector(ray.Direction)
 	t := 0.5 * (unitDir.Y + 1)
