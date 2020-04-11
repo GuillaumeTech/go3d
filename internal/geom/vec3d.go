@@ -9,6 +9,16 @@ type Vec3d struct {
 	X, Y, Z float64
 }
 
+func clamp(val float64, min float64, max float64) float64 {
+	if val < min {
+		return min
+	}
+	if val > max {
+		return max
+	}
+	return val
+}
+
 func (v *Vec3d) Negate() Vec3d {
 	return Vec3d{-v.X, -v.Y, -v.Z}
 }
@@ -33,11 +43,16 @@ func (v *Vec3d) Length() float64 {
 	return math.Sqrt(v.X*v.X + v.Y*v.Y + v.Z*v.Z)
 }
 
-func (v *Vec3d) GetColor() string {
+func (v *Vec3d) GetColor(samplePerPixels int) string {
+	sampleFloat := float64(samplePerPixels)
+	r := v.X / sampleFloat
+	g := v.Y / sampleFloat
+	b := v.Z / sampleFloat
+
 	return fmt.Sprintf("%d %d %d\n",
-		int(255.99*v.X),
-		int(255.99*v.Y),
-		int(255.99*v.Z))
+		int(256*clamp(r, 0, 0.999)),
+		int(256*clamp(g, 0, 0.999)),
+		int(256*clamp(b, 0, 0.999)))
 }
 func DotProduct(vectorA Vec3d, vectorB Vec3d) float64 {
 	return vectorA.X*vectorB.X + vectorA.Y*vectorB.Y + vectorA.Z*vectorB.Z
