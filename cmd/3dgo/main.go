@@ -14,13 +14,13 @@ func hitSphere(center geom.Vec3d, radius float64, ray geom.Ray) float64 {
 	// the ray goes througth the sphere is a 2nd deg equation
 	oc := geom.SubstractTwoVec(ray.Origin, center)
 	a := geom.DotProduct(ray.Direction, ray.Direction)
-	b := 2 * geom.DotProduct(oc, ray.Direction)
+	halfB := geom.DotProduct(oc, ray.Direction)
 	c := geom.DotProduct(oc, oc) - radius*radius
-	discriminant := b*b - 4*a*c
+	discriminant := halfB*halfB - 2*a*c
 	if discriminant < 0 {
 		return -1
 	} else {
-		return ((-b - math.Sqrt(discriminant)) / (2 * a))
+		return ((-halfB - math.Sqrt(discriminant)) / a)
 	}
 }
 
