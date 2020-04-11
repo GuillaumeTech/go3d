@@ -1,6 +1,12 @@
 package hit
 
-import "github.com/GuillaumeTech/3dgo/internal/geom"
+import (
+	"github.com/GuillaumeTech/3dgo/internal/geom"
+)
+
+type Hittable interface {
+	hit(ray geom.Ray, tMin float64, tMax float64, record *HitRecord) bool
+}
 
 type HitRecord struct {
 	P, Normal geom.Vec3d
@@ -15,9 +21,28 @@ func (h *HitRecord) setFaceNormal(ray geom.Ray, outwardNormal geom.Vec3d) {
 	} else {
 		h.Normal = outwardNormal.Negate()
 	}
-
 }
 
-type Hittable interface {
-	hit(ray geom.Ray, tMin float64, tMax float64, record *HitRecord) bool
+type HittableList struct {
+	ObjectList []Hittable
+}
+
+func (hl *HittableList) Add(obj Hittable) {
+	hl.ObjectList = append(hl.ObjectList, obj)
+}
+
+func (hl *HittableList) Hit(ray geom.Ray, tMin float64, tMax float64, record *HitRecord) bool {
+	var tempRecord HitRecord
+	hitAnything := false
+	closestSoFar := tMax
+
+	for _, obj := range hl.ObjectList {
+		if obj.hit(ray, tMin, closestSoFar, &tempRecord) {
+			hitAnything = true
+			closestSoFar = tempRecord.T
+			*record = tempRecord
+		}
+	}
+
+	return hitAnything
 }

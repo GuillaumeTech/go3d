@@ -16,10 +16,12 @@ func (sphere Sphere) hit(ray geom.Ray, tMin float64, tMax float64, record *HitRe
 	a := geom.DotProduct(ray.Direction, ray.Direction)
 	halfB := geom.DotProduct(oc, ray.Direction)
 	c := geom.DotProduct(oc, oc) - sphere.Radius*sphere.Radius
-	discriminant := halfB*halfB - 2*a*c
-	if discriminant < 0 {
+	discriminant := halfB*halfB - a*c
+	if discriminant > 0 {
+
 		root := math.Sqrt(discriminant)
 		temp := (-halfB - root) / a
+
 		if temp < tMax && temp > tMin {
 			record.T = temp
 			record.P = ray.At(temp)
