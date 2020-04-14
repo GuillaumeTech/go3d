@@ -3,6 +3,7 @@ package geom
 import (
 	"fmt"
 	"math"
+	"math/rand"
 )
 
 type Vec3d struct {
@@ -45,9 +46,9 @@ func (v *Vec3d) Length() float64 {
 
 func (v *Vec3d) GetColor(samplePerPixels int) string {
 	sampleFloat := float64(samplePerPixels)
-	r := v.X / sampleFloat
-	g := v.Y / sampleFloat
-	b := v.Z / sampleFloat
+	r := math.Sqrt(v.X / sampleFloat)
+	g := math.Sqrt(v.Y / sampleFloat)
+	b := math.Sqrt(v.Z / sampleFloat)
 
 	return fmt.Sprintf("%d %d %d\n",
 		int(256*clamp(r, 0, 0.999)),
@@ -83,4 +84,11 @@ func MultiplyVec(factor float64, vector Vec3d) Vec3d {
 
 func DivideVec(vector Vec3d, factor float64) Vec3d {
 	return vector.Divide(factor)
+}
+
+func RandomUnitVector() Vec3d {
+	a := rand.Float64() * 2 * math.Pi
+	z := rand.Float64()*2 - 1
+	r := math.Sqrt(1 - z*z)
+	return Vec3d{r * math.Cos(a), r * math.Sin(a), z}
 }

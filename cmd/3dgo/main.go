@@ -11,10 +11,15 @@ import (
 	"github.com/GuillaumeTech/3dgo/internal/geom"
 )
 
-func rayHit(ray geom.Ray, world hit.HittableList) geom.Vec3d {
+func rayHit(ray geom.Ray, world hit.HittableList, depth int) geom.Vec3d {
 	var record hit.HitRecord
+
+	if depth <= 0 {
+		return geom.Vec3d{0, 0, 0}
+	}
 	if world.Hit(ray, 0, math.Inf(1), &record) {
-		return geom.MultiplyVec(0.5, geom.Vec3d{record.Normal.X + 1, record.Normal.Y + 1, record.Normal.Z + 1})
+		target := geom.AddTwoVec(geom.RandomUnitVector(), geom.AddTwoVec(record.P, record.Normal))
+		return geom.MultiplyVec(0.5, rayHit(geom.Ray{record.P, geom.SubstractTwoVec(target, record.P)}, world, depth-1))
 	}
 	unitDir := geom.UnitVector(ray.Direction)
 	t := 0.5 * (unitDir.Y + 1)
@@ -25,9 +30,10 @@ func rayHit(ray geom.Ray, world hit.HittableList) geom.Vec3d {
 }
 
 func main() {
-	const imageWidth float64 = 800
-	const imageHeight float64 = 400
-	const samplesPerPixels int = 50
+	const imageWidth float64 = 400
+	const imageHeight float64 = 200
+	const samplesPerPixels int = 100
+	const maxDepth int = 50
 
 	image := []byte(fmt.Sprintf("P3\n%.0f %.0f\n255\n", imageWidth, imageHeight))
 
@@ -46,7 +52,7 @@ func main() {
 				u := (float64(i) + rand.Float64()) / imageWidth
 				v := (float64(j) + rand.Float64()) / imageHeight
 				ray := camera.GetRay(u, v)
-				rayHit := rayHit(ray, world)
+				rayHit := rayHit(ray, world, maxDepth)
 				hitSum = geom.AddTwoVec(rayHit, hitSum)
 			}
 			image = append(image, []byte(hitSum.GetColor(samplesPerPixels))...)
