@@ -92,3 +92,7 @@ func RandomUnitVector() Vec3d {
 	r := math.Sqrt(1 - z*z)
 	return Vec3d{r * math.Cos(a), r * math.Sin(a), z}
 }
+
+func MultiplyVecPerCoords(vectorA Vec3d, vectorB Vec3d) Vec3d {
+	return Vec3d{vectorA.X * vectorB.X, vectorA.Y * vectorB.Y, vectorA.Z * vectorB.Z}
+}

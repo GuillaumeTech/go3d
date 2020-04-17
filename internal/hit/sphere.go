@@ -9,6 +9,7 @@ import (
 type Sphere struct {
 	Center geom.Vec3d
 	Radius float64
+	Mat    Material
 }
 
 func (sphere Sphere) hit(ray geom.Ray, tMin float64, tMax float64, record *HitRecord) bool {
@@ -27,6 +28,7 @@ func (sphere Sphere) hit(ray geom.Ray, tMin float64, tMax float64, record *HitRe
 			record.P = ray.At(temp)
 			outwardNormal := geom.DivideVec(geom.SubstractTwoVec(record.P, sphere.Center), sphere.Radius)
 			record.setFaceNormal(ray, outwardNormal)
+			record.Mat = sphere.Mat
 			return true
 		}
 
@@ -36,6 +38,7 @@ func (sphere Sphere) hit(ray geom.Ray, tMin float64, tMax float64, record *HitRe
 			record.P = ray.At(temp)
 			outwardNormal := geom.DivideVec(geom.SubstractTwoVec(record.P, sphere.Center), sphere.Radius)
 			record.setFaceNormal(ray, outwardNormal)
+			record.Mat = sphere.Mat
 			return true
 		}
 	}

@@ -17,9 +17,13 @@ func rayHit(ray geom.Ray, world hit.HittableList, depth int) geom.Vec3d {
 	if depth <= 0 {
 		return geom.Vec3d{0, 0, 0}
 	}
-	if world.Hit(ray, 0, math.Inf(1), &record) {
-		target := geom.AddTwoVec(geom.RandomUnitVector(), geom.AddTwoVec(record.P, record.Normal))
-		return geom.MultiplyVec(0.5, rayHit(geom.Ray{record.P, geom.SubstractTwoVec(target, record.P)}, world, depth-1))
+	if world.Hit(ray, 0.001, math.Inf(1), &record) {
+		var scattered geom.Ray
+		var attenuation geom.Vec3d
+		if record.Mat.Scatter(ray, &record, &attenuation, &scattered) {
+			return geom.MultiplyVecPerCoords(attenuation, rayHit(scattered, world, depth-1))
+		}
+		return geom.Vec3d{0, 0, 0}
 	}
 	unitDir := geom.UnitVector(ray.Direction)
 	t := 0.5 * (unitDir.Y + 1)
@@ -30,9 +34,9 @@ func rayHit(ray geom.Ray, world hit.HittableList, depth int) geom.Vec3d {
 }
 
 func main() {
-	const imageWidth float64 = 400
-	const imageHeight float64 = 200
-	const samplesPerPixels int = 100
+	const imageWidth float64 = 800
+	const imageHeight float64 = 400
+	const samplesPerPixels int = 500
 	const maxDepth int = 50
 
 	image := []byte(fmt.Sprintf("P3\n%.0f %.0f\n255\n", imageWidth, imageHeight))
@@ -41,8 +45,11 @@ func main() {
 		geom.Vec3d{0, 2, 0}, geom.Vec3d{0, 0, 0}}
 
 	var world hit.HittableList
-	world.Add(hit.Sphere{geom.Vec3d{0, 0, -1}, 0.5})
-	world.Add(hit.Sphere{geom.Vec3d{0, -100.5, -1}, 100})
+	world.Add(hit.Sphere{geom.Vec3d{0, 0, -1}, 0.5, hit.Metal{geom.Vec3d{0.5, 0.01, 0}}})
+	world.Add(hit.Sphere{geom.Vec3d{0.5, 0, -1}, 0.47, hit.Lambertian{geom.Vec3d{0.7, 0.7, 0.7}}})
+	world.Add(hit.Sphere{geom.Vec3d{-0.5, 0, -1}, 0.47, hit.Lambertian{geom.Vec3d{0.7, 0.7, 0.7}}})
+
+	world.Add(hit.Sphere{geom.Vec3d{0, -100.5, -1}, 100, hit.Lambertian{geom.Vec3d{0.3, 0.3, 0.6}}})
 
 	for j := int(imageHeight) - 1; j >= 0; j-- {
 		fmt.Println(fmt.Sprintf("Scan lines remaining: %d ", j))
