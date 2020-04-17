@@ -34,9 +34,9 @@ func rayHit(ray geom.Ray, world hit.HittableList, depth int) geom.Vec3d {
 }
 
 func main() {
-	const imageWidth float64 = 800
-	const imageHeight float64 = 400
-	const samplesPerPixels int = 500
+	const imageWidth float64 = 400
+	const imageHeight float64 = 200
+	const samplesPerPixels int = 100
 	const maxDepth int = 50
 
 	image := []byte(fmt.Sprintf("P3\n%.0f %.0f\n255\n", imageWidth, imageHeight))
@@ -45,7 +45,7 @@ func main() {
 		geom.Vec3d{0, 2, 0}, geom.Vec3d{0, 0, 0}}
 
 	var world hit.HittableList
-	world.Add(hit.Sphere{geom.Vec3d{0, 0, -1}, 0.5, hit.Metal{geom.Vec3d{0.5, 0.01, 0}}})
+	world.Add(hit.Sphere{geom.Vec3d{0, 0, -1}, 0.5, hit.Metal{geom.Vec3d{0.5, 0.01, 0}, 0.2}})
 	world.Add(hit.Sphere{geom.Vec3d{0.5, 0, -1}, 0.47, hit.Lambertian{geom.Vec3d{0.7, 0.7, 0.7}}})
 	world.Add(hit.Sphere{geom.Vec3d{-0.5, 0, -1}, 0.47, hit.Lambertian{geom.Vec3d{0.7, 0.7, 0.7}}})
 
