@@ -44,6 +44,10 @@ func (v *Vec3d) Length() float64 {
 	return math.Sqrt(v.X*v.X + v.Y*v.Y + v.Z*v.Z)
 }
 
+func (v *Vec3d) LengthSquared() float64 {
+	return v.X*v.X + v.Y*v.Y + v.Z*v.Z
+}
+
 func (v *Vec3d) GetColor(samplePerPixels int) string {
 	sampleFloat := float64(samplePerPixels)
 	r := math.Sqrt(v.X / sampleFloat)
