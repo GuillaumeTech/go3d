@@ -67,7 +67,7 @@ func CrossProduct(vectorA Vec3d, vectorB Vec3d) Vec3d {
 	return Vec3d{
 		vectorA.Y*vectorB.Z - vectorA.Z*vectorB.Y,
 		vectorA.Z*vectorB.X - vectorA.X*vectorB.Z,
-		vectorA.X*vectorB.Y + vectorA.Y*vectorB.X}
+		vectorA.X*vectorB.Y - vectorA.Y*vectorB.X}
 }
 
 func UnitVector(vectorA Vec3d) Vec3d {
