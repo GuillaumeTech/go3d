@@ -41,10 +41,10 @@ func main() {
 
 	image := []byte(fmt.Sprintf("P3\n%.0f %.0f\n255\n", imageWidth, imageHeight))
 
-	camera := geom.Camera{geom.Vec3d{-2, -1, -1}, geom.Vec3d{4, 0, 0},
-		geom.Vec3d{0, 2, 0}, geom.Vec3d{0, 0, 0}}
+	camera := geom.NewCamera(geom.Vec3d{-2, 2, 1}, geom.Vec3d{0, 0, -1}, geom.Vec3d{0, 1, 0}, 27, imageWidth/imageHeight)
 
 	var world hit.HittableList
+
 	world.Add(hit.Sphere{geom.Vec3d{0, 0, -1}, 0.5, hit.Metal{geom.Vec3d{0.5, 0.01, 0}, 0.2}})
 	world.Add(hit.Sphere{geom.Vec3d{0.5, 0, -1}, 0.47, hit.Lambertian{geom.Vec3d{0.7, 0.7, 0.7}}})
 	world.Add(hit.Sphere{geom.Vec3d{-0.7, 0, -1}, 0.47, hit.Dielectric{1.45}})
