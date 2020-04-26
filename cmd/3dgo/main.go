@@ -34,9 +34,9 @@ func rayHit(ray geom.Ray, world hit.HittableList, depth int) geom.Vec3d {
 }
 
 func main() {
-	const imageWidth float64 = 400
-	const imageHeight float64 = 200
-	const samplesPerPixels int = 100
+	const imageWidth float64 = 800
+	const imageHeight float64 = 400
+	const samplesPerPixels int = 400
 	const maxDepth int = 50
 
 	image := []byte(fmt.Sprintf("P3\n%.0f %.0f\n255\n", imageWidth, imageHeight))
@@ -45,16 +45,20 @@ func main() {
 
 	var world hit.HittableList
 
-	triangle := hit.NewTriangle(geom.Vec3d{0, 0, 0.4}, geom.Vec3d{0, 0.2, 0}, geom.Vec3d{0, 0.7, 0}, hit.Metal{geom.Vec3d{0.5, 0.01, 0}, 0})
-	triangle2 := hit.NewTriangle(geom.Vec3d{1, 0, 0.4}, geom.Vec3d{0, 0.2, 0}, geom.Vec3d{0, 0.7, 0}, hit.Metal{geom.Vec3d{0.5, 0.7, 0}, 0})
+	//triangle := hit.NewTriangle(geom.Vec3d{0, 0, -1}, geom.Vec3d{0.5, 0.2, -0.2}, geom.Vec3d{0, -0.3, -0.7}, hit.Lambertian{geom.Vec3d{0.5, 0.7, 0}})
+	//triangle2 := hit.NewTriangle(geom.Vec3d{1, 0, 0.4}, geom.Vec3d{0, -2, 0}, geom.Vec3d{0, 0.7, 0}, hit.Lambertian{geom.Vec3d{0.2, 0, 0.7}})
+	triangle3 := hit.NewTriangle(geom.Vec3d{-0.2, -0.1, -1}, geom.Vec3d{1, 0.2, 0.5}, geom.Vec3d{-0.27, 0.2, 1}, hit.Metal{geom.Vec3d{0.2, 0, 0.7}, 0.1})
 
-	world.Add(triangle)
-	world.Add(triangle2)
+	//world.Add(triangle)
+	//world.Add(triangle2)
+	world.Add(triangle3)
 
-	// world.Add(hit.Sphere{geom.Vec3d{0.5, 0, -1}, 0.47, hit.Lambertian{geom.Vec3d{0.7, 0.7, 0.7}}})
-	// world.Add(hit.Sphere{geom.Vec3d{-0.7, 0, -1}, 0.47, hit.Dielectric{1.45}})
+	world.Add(hit.Sphere{geom.Vec3d{0.5, 0, -1}, 0.47, hit.Lambertian{geom.Vec3d{0.8, 0.01, 0}}})
 
-	world.Add(hit.Sphere{geom.Vec3d{0, -100.5, -1}, 100, hit.Lambertian{geom.Vec3d{0.3, 0.3, 0.6}}})
+	world.Add(hit.Sphere{geom.Vec3d{-0.3, 0, 1.2}, 0.6, hit.Metal{geom.Vec3d{0.7, 0.3, 0.1}, 0.1}})
+	world.Add(hit.Sphere{geom.Vec3d{-0.7, 0, -1}, 0.5, hit.Dielectric{1.45}})
+
+	world.Add(hit.Sphere{geom.Vec3d{0, -100.5, -1}, 100, hit.Metal{geom.Vec3d{0.7, 0.7, 0.8}, 0.4}})
 
 	for j := int(imageHeight) - 1; j >= 0; j-- {
 		fmt.Println(fmt.Sprintf("Scan lines remaining: %d ", j))
