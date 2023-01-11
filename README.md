@@ -1,20 +1,25 @@
 # go3d
+
 ![Sample output](./output.png "Sample output")
 
-A Ray tracer in go 
+![Sample output](./monkey.png "imported obj output")
+
+A Ray tracer in go
 It support differents materials and geometries
 
 Materials :
- - Lambertians
- - Metals
- - Dielectrics
+
+- Lambertians
+- Metals
+- Dielectrics
 
 Geometry:
+
 - spheres
 - triangles
 
-
-I might add .obj imports someday
+~~I might add .obj imports someday~~
+It's kind of working
 
 Based on Raytracing In One Weekend by Peter Shirley
 
@@ -28,13 +33,5 @@ go build
 
 It outputs ppm files,
 
-
 If you want to change the scene,
-scene description and rendering parameters are in the main function of main.go 
-
-
-
-
-
-
-
+scene description and rendering parameters are in the main function of main.go

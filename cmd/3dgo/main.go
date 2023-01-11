@@ -7,6 +7,7 @@ import (
 	"math/rand"
 
 	"github.com/GuillaumeTech/3dgo/internal/hit"
+	"github.com/GuillaumeTech/3dgo/internal/importFiles"
 
 	"github.com/GuillaumeTech/3dgo/internal/geom"
 )
@@ -34,24 +35,22 @@ func rayHit(ray geom.Ray, world hit.HittableList, depth int) geom.Vec3d {
 }
 
 func main() {
-	const imageWidth float64 = 800
-	const imageHeight float64 = 400
-	const samplesPerPixels int = 400
-	const maxDepth int = 50
+	const imageWidth float64 = 400
+	const imageHeight float64 = 200
+	const samplesPerPixels int = 15
+	const maxDepth int = 15
 
 	image := []byte(fmt.Sprintf("P3\n%.0f %.0f\n255\n", imageWidth, imageHeight))
 
-	camera := geom.NewCamera(geom.Vec3d{-2, 2, 1}, geom.Vec3d{0, 0, 0}, geom.Vec3d{0, 1, 0}, 27, imageWidth/imageHeight)
+	camera := geom.NewCamera(geom.Vec3d{-3, 5, 1}, geom.Vec3d{0, 0, 0}, geom.Vec3d{0, 1, 0}, 27, imageWidth/imageHeight)
 
 	var world hit.HittableList
 
 	//triangle := hit.NewTriangle(geom.Vec3d{0, 0, -1}, geom.Vec3d{0.5, 0.2, -0.2}, geom.Vec3d{0, -0.3, -0.7}, hit.Lambertian{geom.Vec3d{0.5, 0.7, 0}})
 	//triangle2 := hit.NewTriangle(geom.Vec3d{1, 0, 0.4}, geom.Vec3d{0, -2, 0}, geom.Vec3d{0, 0.7, 0}, hit.Lambertian{geom.Vec3d{0.2, 0, 0.7}})
-	triangle3 := hit.NewTriangle(geom.Vec3d{-0.2, -0.1, -1}, geom.Vec3d{1, 0.2, 0.5}, geom.Vec3d{-0.27, 0.2, 1}, hit.Metal{geom.Vec3d{0.2, 0, 0.7}, 0.1})
-
+	world = importFiles.AddObjToWorld("../../monkey2.obj",hit.Lambertian{geom.Vec3d{0.1, 0, 0.8}},world) 
 	//world.Add(triangle)
 	//world.Add(triangle2)
-	world.Add(triangle3)
 
 	world.Add(hit.Sphere{geom.Vec3d{0.5, 0, -1}, 0.47, hit.Lambertian{geom.Vec3d{0.8, 0.01, 0}}})
 
